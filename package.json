@@ -1,0 +1,28 @@
+{
+  "name": "forkify-project",
+  "version": "1.0.0",
+  "description": "Displays the reciepes",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hanan-Mir/Forkify-Project.git"
+  },
+  "author": "Hanan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hanan-Mir/Forkify-Project/issues"
+  },
+  "homepage": "https://github.com/Hanan-Mir/Forkify-Project#readme",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.13.2",
+    "parcel": "^2.13.2",
+    "sass": "^1.83.0"
+  },
+  "dependencies": {
+    "fraction.js": "^5.2.1",
+    "fractional": "^1.0.0"
+  }
+}
