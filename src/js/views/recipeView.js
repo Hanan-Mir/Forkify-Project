@@ -1,35 +1,29 @@
 import icons from 'url:../../img/icons.svg';
 import {Fraction} from 'fractional';
-class RecipeView{
-#data;
-#parentEl= document.querySelector('.recipe');
-_render(data){
-    this.#data=data;
-    let markup=this.#generateMarkup();
-    this.#parentEl.innerHTML='';
-    this.#parentEl.insertAdjacentHTML('afterbegin',markup);
-}
-#generateMarkup(){
+import View from './view';
+class RecipeView extends View{
+_parentEl= document.querySelector('.recipe');
+_message=`Recipe not found.Check weather the URL is correct :(`;
+_generateMarkup(){
     return `<figure class="recipe__fig">
-          <img src="${this.#data.imageUrl}" alt="${this.#data.title}" class="recipe__img" />
+          <img src="${this._data.imageUrl}" alt="${this._data.title}" class="recipe__img" />
           <h1 class="recipe__title">
-            <span>${this.#data.title}</span>
+            <span>${this._data.title}</span>
           </h1>
         </figure>
-
         <div class="recipe__details">
           <div class="recipe__info">
             <svg class="recipe__info-icon">
               <use href="${icons}#icon-clock"></use>
             </svg>
-            <span class="recipe__info-data recipe__info-data--minutes">${this.#data.cookingTime}</span>
+            <span class="recipe__info-data recipe__info-data--minutes">${this._data.cookingTime}</span>
             <span class="recipe__info-text">minutes</span>
           </div>
           <div class="recipe__info">
             <svg class="recipe__info-icon">
               <use href="${icons}#icon-users"></use>
             </svg>
-            <span class="recipe__info-data recipe__info-data--people">${this.#data.servings}</span>
+            <span class="recipe__info-data recipe__info-data--people">${this._data.servings}</span>
             <span class="recipe__info-text">servings</span>
 
             <div class="recipe__info-buttons">
@@ -61,7 +55,7 @@ _render(data){
         <div class="recipe__ingredients">
           <h2 class="heading--2">Recipe ingredients</h2>
           <ul class="recipe__ingredient-list">
-          ${this.#data.ingredients.map(this.#generateIngMarkup).join('')}
+          ${this._data.ingredients.map(this._generateIngMarkup).join('')}
             
           </ul>
         </div>
@@ -69,12 +63,12 @@ _render(data){
           <h2 class="heading--2">How to cook it</h2>
           <p class="recipe__directions-text">
             This recipe was carefully designed and tested by
-            <span class="recipe__publisher">${this.#data.publisher}</span>. Please check out
+            <span class="recipe__publisher">${this._data.publisher}</span>. Please check out
             directions at their website.
           </p>
           <a
             class="btn--small recipe__btn"
-            href="${this.#data.sourceUrl}"
+            href="${this._data.sourceUrl}"
             target="_blank"
           >
             <span>Directions</span>
@@ -84,7 +78,7 @@ _render(data){
           </a>
         </div>`;
 }
-#generateIngMarkup(ing){
+_generateIngMarkup(ing){
     return `<li class="recipe__ingredient">
               <svg class="recipe__icon">
                 <use href="${icons}#icon-check"></use>
@@ -96,14 +90,13 @@ _render(data){
               </div>
             </li>`
 }
-renderSpinner(){
-    let html=`<div class="spinner">
-    <svg>
-      <use href="${icons}#icon-loader"></use>
-    </svg>
-  </div>`;
-  this.#parentEl.innerHTML='';
-  this.#parentEl.insertAdjacentHTML('afterbegin',html);
+
+addHandlerRender(handler){
+  let events=['hashchange','load'];
+  events.forEach(el=>{
+    window.addEventListener(el,handler);
+  })
 }
+
 }
 export default new RecipeView();

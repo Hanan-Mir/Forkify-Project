@@ -1,11 +1,18 @@
+import { API_URL,REC_PER_PGE } from "./config";
+import { getJson } from "./helpers";
 export let state={
-    recipe:{}
+    recipe:{},
+    search:{
+      query:'',
+      page:1,
+      RecipesPerPage:REC_PER_PGE,
+      recipes:[]
+    }
 }
 export let loadRecipe= async function(id)
 {
-    let response=await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}`);
-  let data=await response.json();
-if(!response.ok) throw new Error(`${response.status},${data.message}`);
+  try{
+let data=await getJson(`${API_URL}/${id}`);
   let {recipe} =data.data;
  state.recipe={
     id:recipe.id,
@@ -18,8 +25,34 @@ if(!response.ok) throw new Error(`${response.status},${data.message}`);
     ingredients:recipe.ingredients,
     cookingTime:recipe.cooking_time
   }
+  }
+  catch(err){
+  throw err;
+  }
+}
+export let loadRecipeSearchResults=async function(query){
+try{
+let data=await getJson(`${API_URL}?search=${query}`);
+state.search.recipes=data.data.recipes.map(recipe=>{
+  return {
+  id:recipe.id,
+  imageUrl:recipe.image_url,
+  publisher:recipe.publisher,
+  title:recipe.title
+}});
+state.search.query=query;
+console.log(state);
+}
+catch(err){
+  console.log(err);
+throw err;
+}
 
-  console.log(response,data);
-  console.log(state.recipe);
+}
+export let recipiesPerPage=function(page=state.search.page){
+  state.search.page=page;
+  let startPage=(page-1)*state.search.RecipesPerPage;
+  let endPage=page*state.search.RecipesPerPage;
+  return state.search.recipes.slice(startPage,endPage);
 
 }
