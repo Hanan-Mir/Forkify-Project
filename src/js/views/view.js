@@ -8,6 +8,26 @@ export default class View{
         this.clear();
         this._parentEl.insertAdjacentHTML('afterbegin',markup);
     }
+    update(data){
+      this._data=data;
+      let newMarkup=this._generateMarkup();
+      const newDom=document.createRange().createContextualFragment(newMarkup);
+      const newEl=Array.from(newDom.querySelectorAll('*'));
+      const curEl=Array.from(this._parentEl.querySelectorAll('*'));
+      newEl.forEach((el,i)=>{
+        const currentEl=curEl[i]
+        console.log(currentEl,el.isEqualNode(currentEl));
+        if(!el.isEqualNode(currentEl) && el.firstChild?.nodeValue.trim()!=='' ){
+currentEl.textContent=el.textContent;
+        }
+        if(!el.isEqualNode(currentEl)){
+          Array.from(el.attributes).forEach(attr=>{
+            currentEl.setAttribute(attr.name,attr.value)
+          })
+        }
+      })
+      
+    }
     clear(){
         this._parentEl.innerHTML='';
       }

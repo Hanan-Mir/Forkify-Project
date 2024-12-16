@@ -9,7 +9,9 @@ getQuery(){
 addHandlerSearch(handler){
     this._parentEl.addEventListener('click',function(e){
 e.preventDefault();
+this.clear;
         handler();
+
     })
 }
 _clearSearchFeild(){

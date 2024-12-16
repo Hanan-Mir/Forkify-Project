@@ -41,6 +41,7 @@ state.search.recipes=data.data.recipes.map(recipe=>{
   title:recipe.title
 }});
 state.search.query=query;
+state.search.page=1;
 console.log(state);
 }
 catch(err){
@@ -54,5 +55,10 @@ export let recipiesPerPage=function(page=state.search.page){
   let startPage=(page-1)*state.search.RecipesPerPage;
   let endPage=page*state.search.RecipesPerPage;
   return state.search.recipes.slice(startPage,endPage);
-
+}
+export let updateServings=function(newServings){
+  state.recipe.ingredients.forEach(ing=>{
+    ing.quantity=ing.quantity*state.recipe.servings/newServings;
+  })
+  state.recipe.servings=newServings;
 }
