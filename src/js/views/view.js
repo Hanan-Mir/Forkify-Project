@@ -15,8 +15,7 @@ export default class View{
       const newEl=Array.from(newDom.querySelectorAll('*'));
       const curEl=Array.from(this._parentEl.querySelectorAll('*'));
       newEl.forEach((el,i)=>{
-        const currentEl=curEl[i]
-        console.log(currentEl,el.isEqualNode(currentEl));
+        const currentEl=curEl[i];
         if(!el.isEqualNode(currentEl) && el.firstChild?.nodeValue.trim()!=='' ){
 currentEl.textContent=el.textContent;
         }

@@ -652,15 +652,23 @@ let controlServings = function(newServings) {
     _modelJs.updateServings(newServings);
     (0, _recipeViewDefault.default).update(_modelJs.state.recipe);
 };
+let controlBookmark = function() {
+    (0, _recipeViewDefault.default).update(_modelJs.state.recipe);
+    if (_modelJs.state.recipe.bookmarked) _modelJs.removeBookmarks(_modelJs.state.recipe.id);
+    else _modelJs.addBookmarks(_modelJs.state.recipe);
+    console.log(_modelJs.state.recipe);
+    (0, _recipeViewDefault.default).update(_modelJs.state.recipe);
+};
 let init = function() {
     (0, _recipeViewDefault.default).addHandlerRender(getRecipes);
     (0, _searchViewJsDefault.default).addHandlerSearch(searchAllRecipes);
     (0, _paginationViewJsDefault.default).handlerClickBtn(controlPagination);
     (0, _recipeViewDefault.default).addHandlerUpdateServings(controlServings);
+    (0, _recipeViewDefault.default).addHandlerAddBookmark(controlBookmark);
 };
 init();
 
-},{"./model.js":"Y4A21","./views/recipeView":"l60JC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/searchView.js":"9OQAM","./views/resultsView.js":"cSbZE","./views/view.js":"bWlJ9","./views/paginationView.js":"6z7bi"}],"Y4A21":[function(require,module,exports,__globalThis) {
+},{"./model.js":"Y4A21","./views/recipeView":"l60JC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/searchView.js":"9OQAM","./views/resultsView.js":"cSbZE","./views/paginationView.js":"6z7bi","./views/view.js":"bWlJ9"}],"Y4A21":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "state", ()=>state);
@@ -668,6 +676,8 @@ parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe);
 parcelHelpers.export(exports, "loadRecipeSearchResults", ()=>loadRecipeSearchResults);
 parcelHelpers.export(exports, "recipiesPerPage", ()=>recipiesPerPage);
 parcelHelpers.export(exports, "updateServings", ()=>updateServings);
+parcelHelpers.export(exports, "addBookmarks", ()=>addBookmarks);
+parcelHelpers.export(exports, "removeBookmarks", ()=>removeBookmarks);
 var _config = require("./config");
 var _helpers = require("./helpers");
 let state = {
@@ -677,7 +687,8 @@ let state = {
         page: 1,
         RecipesPerPage: (0, _config.REC_PER_PGE),
         recipes: []
-    }
+    },
+    bookmarks: []
 };
 let loadRecipe = async function(id) {
     try {
@@ -694,6 +705,9 @@ let loadRecipe = async function(id) {
             ingredients: recipe.ingredients,
             cookingTime: recipe.cooking_time
         };
+        state.bookmarks.some((el)=>{
+            if (el.id === id) state.recipe.bookmarked = true;
+        });
     } catch (err) {
         throw err;
     }
@@ -711,7 +725,6 @@ let loadRecipeSearchResults = async function(query) {
         });
         state.search.query = query;
         state.search.page = 1;
-        console.log(state);
     } catch (err) {
         console.log(err);
         throw err;
@@ -728,6 +741,17 @@ let updateServings = function(newServings) {
         ing.quantity = ing.quantity * state.recipe.servings / newServings;
     });
     state.recipe.servings = newServings;
+};
+let addBookmarks = function(recipe) {
+    state.bookmarks.push(recipe);
+    if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
+};
+let removeBookmarks = function(id) {
+    let index = state.bookmarks.findIndex((el)=>el.id === id);
+    console.log(index);
+    state.bookmarks.splice(index, 1);
+    console.log(state.bookmarks);
+    if (state.recipe.id === id) state.recipe.bookmarked = false;
 };
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./config":"k5Hzs","./helpers":"hGI1E"}],"gkKU3":[function(require,module,exports,__globalThis) {
@@ -848,9 +872,9 @@ class RecipeView extends (0, _viewDefault.default) {
               <use href="${0, _iconsSvgDefault.default}#icon-user"></use>
             </svg>
           </div>
-          <button class="btn--round">
+          <button class="btn--round btn--bookmark">
             <svg class="">
-              <use href="${0, _iconsSvgDefault.default}#icon-bookmark-fill"></use>
+              <use href="${0, _iconsSvgDefault.default}#icon-bookmark${this._data.bookmarked ? '-fill' : ''}"></use>
             </svg>
           </button>
         </div>
@@ -909,6 +933,13 @@ class RecipeView extends (0, _viewDefault.default) {
             if (!btn) return;
             let { updateTo } = btn.dataset;
             if (+updateTo > 0) handler(+updateTo);
+        });
+    }
+    addHandlerAddBookmark(handler) {
+        this._parentEl.addEventListener('click', function(e) {
+            let btn = e.target.closest('.btn--bookmark');
+            if (!btn) return;
+            handler();
         });
     }
 }
@@ -1227,7 +1258,6 @@ class View {
         const curEl = Array.from(this._parentEl.querySelectorAll('*'));
         newEl.forEach((el, i)=>{
             const currentEl = curEl[i];
-            console.log(currentEl, el.isEqualNode(currentEl));
             if (!el.isEqualNode(currentEl) && el.firstChild?.nodeValue.trim() !== '') currentEl.textContent = el.textContent;
             if (!el.isEqualNode(currentEl)) Array.from(el.attributes).forEach((attr)=>{
                 currentEl.setAttribute(attr.name, attr.value);

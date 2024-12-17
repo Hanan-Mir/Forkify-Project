@@ -58,10 +58,22 @@ let controlServings=function(newServings){
   recipeView.update(model.state.recipe);
 
 }
+let controlBookmark=function(){
+  recipeView.update(model.state.recipe);
+if(model.state.recipe.bookmarked){
+  model.removeBookmarks(model.state.recipe.id);
+}
+else{
+  model.addBookmarks(model.state.recipe);
+}
+console.log(model.state.recipe);
+recipeView.update(model.state.recipe);
+}
 let init=function(){
   recipeView.addHandlerRender(getRecipes);
   searchView.addHandlerSearch(searchAllRecipes);
   paginationView.handlerClickBtn(controlPagination);
-  recipeView.addHandlerUpdateServings(controlServings)
+  recipeView.addHandlerUpdateServings(controlServings);
+  recipeView.addHandlerAddBookmark(controlBookmark);
 }
 init();
