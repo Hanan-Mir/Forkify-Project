@@ -18,8 +18,12 @@
   "homepage": "https://github.com/Hanan-Mir/Forkify-Project#readme",
   "devDependencies": {
     "@parcel/transformer-sass": "^2.13.2",
+    "assert": "^2.1.0",
+    "console-browserify": "^1.2.0",
     "parcel": "^2.13.2",
-    "sass": "^1.83.0"
+    "process": "^0.11.10",
+    "sass": "^1.83.0",
+    "util": "^0.12.5"
   },
   "dependencies": {
     "fraction.js": "^5.2.1",

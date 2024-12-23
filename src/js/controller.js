@@ -4,6 +4,8 @@ import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
 import paginationView from './views/paginationView.js';
 import View from './views/view.js';
+import bookmarkView from './views/bookmarkView.js';
+import addRecipeView from './views/addRecipeView.js';
 // https://forkify-api.herokuapp.com/v2
 
 ///////////////////////////////////////
@@ -19,10 +21,8 @@ const getRecipes=async function(){
 await model.loadRecipe(id);
 //getting recipe data
 let {recipe}=model.state;
-console.log(recipe);
 //Render recipe
 recipeView.render(recipe);
-  
   }
   catch (err){
     console.log(err);
@@ -68,6 +68,23 @@ else{
 }
 console.log(model.state.recipe);
 recipeView.update(model.state.recipe);
+bookmarkView.render(model.state.bookmarks);
+}
+let controlBookmarkStorage=function(){
+  let data=model.getBrowserStorage();
+  bookmarkView.render(data);
+}
+let controlUploadRecipe=async function(data){
+  await model.sendRecipeData(data);
+ console.log(model.state.recipe);
+ model.addBookmarks(model.state.recipe);
+
+window.history.pushState(null,'',`#${model.state.recipe.id}`);
+setTimeout(function(){
+  addRecipeView.toggleAddRecipe();
+},2000)
+recipeView.render(model.state.recipe);
+bookmarkView.render(model.state.bookmarks);
 }
 let init=function(){
   recipeView.addHandlerRender(getRecipes);
@@ -75,5 +92,7 @@ let init=function(){
   paginationView.handlerClickBtn(controlPagination);
   recipeView.addHandlerUpdateServings(controlServings);
   recipeView.addHandlerAddBookmark(controlBookmark);
+  bookmarkView.addHandlerBookmark(controlBookmarkStorage);
+  addRecipeView.addHandlerSubmitRecipe(controlUploadRecipe);
 }
 init();

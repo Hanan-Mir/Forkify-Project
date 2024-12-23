@@ -5,6 +5,7 @@ class RecipeView extends View{
 _parentEl= document.querySelector('.recipe');
 _message=`Recipe not found.Check weather the URL is correct :(`;
 _generateMarkup(){
+  console.log(this._data);
     return `<figure class="recipe__fig">
           <img src="${this._data.imageUrl}" alt="${this._data.title}" class="recipe__img" />
           <h1 class="recipe__title">
@@ -40,9 +41,9 @@ _generateMarkup(){
             </div>
           </div>
 
-          <div class="recipe__user-generated">
+          <div class="recipe__user-generated ${this._data.key?'':'hidden'}">
             <svg>
-              <use href="${icons}#icon-user"></use>
+              <use href="${icons}#icon-user "></use>
             </svg>
           </div>
           <button class="btn--round btn--bookmark">
